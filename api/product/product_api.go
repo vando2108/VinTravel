@@ -85,3 +85,18 @@ func ReadProduct(c *gin.Context) {
   
   c.JSON(http.StatusOK, ret)
 }
+
+func ReadAllProduct(c *gin.Context) {
+  db, err := driver.Connect(configs.Host, configs.Port, configs.User, configs.Password, configs.Name)
+  if err != nil {
+    c.JSON(http.StatusInternalServerError, "Cannot connect to database")
+    return
+  }
+  productRepo := repoimpl.NewProductRepo(db.SQL)
+  ret, err := productRepo.ReadAllProduct()
+  if err != nil {
+    c.JSON(http.StatusInternalServerError, err)
+    return
+  }
+  c.JSON(http.StatusOK, ret)
+}

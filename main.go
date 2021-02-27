@@ -28,6 +28,7 @@ func main() {
   router.POST("/product/create", product_api.CreateNewProduct)
   router.POST("/product/delete", product_api.DeleteProduct)
   router.GET("/product/readproduct", product_api.ReadProduct)
+  router.GET("/product/readallproduct", product_api.ReadAllProduct)
 
   router.Run(":3000")
 
