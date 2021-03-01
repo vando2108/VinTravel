@@ -120,7 +120,7 @@ func ReadListProductByCategories(c *gin.Context) {
   ret, err := productRepo.ReadListProductByCategories(requestData.Categories)
 
   if err != nil {
-    c.JSON(http.StatusInternalServerError, "Cannot read data")
+    c.JSON(http.StatusInternalServerError, "Cannot read data from database")
     return
   }
 
@@ -138,6 +138,47 @@ func ReadListProductByCategories(c *gin.Context) {
       } {
         ret[i].Name,
         ret[i].Images,
+      },
+    )
+  }
+  c.JSON(http.StatusOK, res)
+}
+
+func ReadListProductByListName(c *gin.Context) {
+  var requestData struct {
+    Name []string `json:"name" form:"name" binding:"required"`
+  }
+
+  if c.ShouldBindJSON(&requestData) != nil {
+    c.JSON(http.StatusBadRequest, "Cannot parse data from request")
+    return
+  }
+
+  db, err := driver.Connect(configs.Host, configs.Port, configs.User, configs.Password, configs.Name)
+  if err != nil {
+    c.JSON(http.StatusInternalServerError, "Cannot connect to database")
+    return
+  }
+  productRepo := repoimpl.NewProductRepo(db.SQL)
+  
+  var res [] struct {
+    Name string
+    Images []string
+  }
+
+  for i := range requestData.Name {
+    queryData, err := productRepo.ReadProduct(requestData.Name[i])
+    if err != nil {
+      c.JSON(http.StatusInternalServerError, "Cannot read data from database")
+      return
+    }
+    res = append(res,
+      struct {
+	Name string
+	Images []string
+      } {
+	queryData.Name,
+	queryData.Images,
       },
     )
   }

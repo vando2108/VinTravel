@@ -30,6 +30,7 @@ func main() {
   router.GET("/product/readproduct", product_api.ReadProduct)
   router.GET("/product/readallproduct", product_api.ReadAllProduct)
   router.GET("product/ReadListProductByCategories", product_api.ReadListProductByCategories)
+  router.GET("product/ReadListProductByListName", product_api.ReadListProductByListName)
 
   router.Run(":3000")
 

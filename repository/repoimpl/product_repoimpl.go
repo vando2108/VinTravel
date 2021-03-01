@@ -168,6 +168,3 @@ func (p *ProductRepoImpl) ReadListProductByCategories(categories string) ([]mode
 
   return ret, nil
 }
-func (p *ProductRepoImpl) ReadListProductByListName(listName []string) ([]models.ProductApi, error) {
-  
-}
