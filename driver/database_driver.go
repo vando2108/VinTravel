@@ -13,7 +13,7 @@ type PostgresDB struct {
 var Postgres = &PostgresDB{}
 
 func Connect(host, port, user, password, dbname string) (*PostgresDB, error) {
-  connectionStr := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable",
+  connectionStr := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s",
 				host, port, user, password, dbname)
   db, err := gorm.Open("postgres", connectionStr)
   if err != nil {
