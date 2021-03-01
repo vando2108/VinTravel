@@ -29,6 +29,7 @@ func main() {
   router.POST("/product/delete", product_api.DeleteProduct)
   router.GET("/product/readproduct", product_api.ReadProduct)
   router.GET("/product/readallproduct", product_api.ReadAllProduct)
+  router.GET("product/ReadListProductByCategories", product_api.ReadListProductByCategories)
 
   router.Run(":3000")
 

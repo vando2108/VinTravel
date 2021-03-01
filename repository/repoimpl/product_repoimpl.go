@@ -133,3 +133,41 @@ func (p *ProductRepoImpl) ReadAllProduct() ([]models.ProductApi, error) {
 
   return ret, nil
 }
+
+func (p *ProductRepoImpl) ReadListProductByCategories(categories string) ([]models.ProductApi, error) {
+  var productDetails []*models.Product_details
+  err := p.Db.Table("product_details").Find(&productDetails, "categories = ?", categories).Error
+  if err != nil {
+    return nil, err
+  }
+  
+  var ret []models.ProductApi
+  for i := range productDetails {
+    var images_query []*models.Product_image
+    var temp models.ProductApi
+    err = p.Db.Table("product_images").Find(&images_query, "id = ?", productDetails[i].Id).Error
+    if err != nil {
+      return nil, err
+    }
+    fmt.Println(images_query)
+
+    temp = models.ProductApi{
+      Name: productDetails[i].Name,
+      Origin: productDetails[i].Origin,
+      Voice: productDetails[i].Voice,
+      Description: productDetails[i].Description,
+      Categories: productDetails[i].Categories,
+      Related: productDetails[i].Related,
+    }
+
+    for j := range images_query {
+      temp.Images = append(temp.Images, images_query[j].Url)
+    }
+    ret = append(ret, temp)
+  }
+
+  return ret, nil
+}
+func (p *ProductRepoImpl) ReadListProductByListName(listName []string) ([]models.ProductApi, error) {
+  
+}

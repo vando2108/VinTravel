@@ -7,5 +7,7 @@ type ProductRepo interface {
   CreateProduct(product *models.ProductApi) (error)
   ReadProduct(name string) (models.ProductApi, error)
   ReadAllProduct() ([]models.ProductApi, error)
+  ReadListProductByCategories(categories string) ([]models.ProductApi, error)
+  ReadListProductByListName(listName []string) ([]models.ProductApi, error)
   DeleteProduct(name string) (error)
 }
