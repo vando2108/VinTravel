@@ -20,7 +20,7 @@ func main() {
 
   router := gin.Default()
 
-  router.GET("/", func (c *gin.Context) {
+  router.GET("/index", func (c *gin.Context) {
     c.String(http.StatusOK, "heelo")
   })
   router.POST("/auth/regsiter", auth.RegsiterUser)
@@ -35,7 +35,7 @@ func main() {
   router.GET("product/ReadListProductByCategories", product_api.ReadListProductByCategories)
   router.GET("product/ReadListProductByListName", product_api.ReadListProductByListName)
 
-  router.Run(":3000")
+  router.Run()
 
 
   defer db.SQL.Close()
