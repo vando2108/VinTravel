@@ -2,7 +2,7 @@ package main
 
 import (
 	// "github.com/gin-gonic/gin"
-	// "fmt"
+	"net/http"
 	auth "vintravel/api/auth"
 	product_api "vintravel/api/product"
 	config "vintravel/configs"
@@ -20,6 +20,9 @@ func main() {
 
   router := gin.Default()
 
+  router.GET("/", func (c *gin.Context) {
+    c.String(http.StatusOK, "heelo")
+  })
   router.POST("/auth/regsiter", auth.RegsiterUser)
   router.POST("/auth/login", auth.Login)
   router.GET("/auth/readuserdata", auth.ReadUserData)
@@ -33,6 +36,7 @@ func main() {
   router.GET("product/ReadListProductByListName", product_api.ReadListProductByListName)
 
   router.Run(":3000")
+
 
   defer db.SQL.Close()
 }
