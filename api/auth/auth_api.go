@@ -9,6 +9,8 @@ import (
 	"vintravel/driver"
 	"vintravel/models"
 	repo "vintravel/repository/repoimpl"
+	jwt "vintravel/middleware/jwt"
+
 	"github.com/asaskevich/govalidator"
 	"github.com/gin-gonic/gin"
 )
@@ -103,16 +105,30 @@ func Login(c *gin.Context) {
     c.JSON(401, err.Error())
     return
   }
-  c.JSON(http.StatusAccepted, "Login succesful")
+  token, err := jwt.Create(requestData.Username)
+  if err != nil {
+    c.JSON(http.StatusInternalServerError, err.Error())
+    return
+  }
+  c.JSON(http.StatusAccepted, token)
 }
 
 func ReadUserData(c *gin.Context) {
-  var requestData struct {Username string `form:"username" json:"username" binding:"required"`}
+  var requestData struct {
+    Username string `form:"username" json:"username" binding:"required"`
+    Token string `form:"token" json:"token" binding:"required"`
+  }
   if c.ShouldBindJSON(&requestData) != nil {
     c.JSON(http.StatusBadRequest, "Cannot parse data from request")
     return
   }
   requestData.Username = models.Santize(requestData.Username)  
+  requestData.Token = models.Santize(requestData.Token)
+
+  if err := jwt.Verify(requestData.Token); err != nil {
+    c.JSON(http.StatusBadRequest, err.Error())
+    return
+  }
   
   //Connect to database
   db, err := driver.Connect(configs.Host, configs.Port, configs.User, configs.Password, configs.Name)
