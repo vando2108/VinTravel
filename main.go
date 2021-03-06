@@ -4,7 +4,7 @@ import (
 	// "github.com/gin-gonic/gin"
 	"net/http"
 	auth "vintravel/api/auth"
-	product_api "vintravel/api/product"
+	speciality_api "vintravel/api/speciality"
 	config "vintravel/configs"
 	"vintravel/driver"
 
@@ -23,17 +23,17 @@ func main() {
   router.GET("/index", func (c *gin.Context) {
     c.String(http.StatusOK, "heelo")
   })
-  router.POST("/auth/regsiter", auth.RegsiterUser)
-  router.POST("/auth/login", auth.Login)
-  router.GET("/auth/readuserdata", auth.ReadUserData)
-  router.POST("/auth/updateuser", auth.UpdateUser)
+  router.POST("/auth/RegsiterUser", auth.RegsiterUser)
+  router.POST("/auth/Login", auth.Login)
+  router.GET("/auth/ReadUserData", auth.ReadUserData)
+  router.POST("/auth/UpdateUser", auth.UpdateUser)
 
-  router.POST("/product/create", product_api.CreateNewProduct)
-  router.POST("/product/delete", product_api.DeleteProduct)
-  router.GET("/product/readproduct", product_api.ReadProduct)
-  router.GET("/product/readallproduct", product_api.ReadAllProduct)
-  router.GET("product/ReadListProductByCategories", product_api.ReadListProductByCategories)
-  router.GET("product/ReadListProductByListName", product_api.ReadListProductByListName)
+  router.POST("/speciality/CreateNewSpeciality", speciality_api.CreateNewSpeciality)
+  router.POST("/speciality/DeleteSpeciality", speciality_api.DeleteSpeciality)
+  router.GET("/speciality/ReadSpeciality", speciality_api.ReadSpeciality)
+  router.GET("/speciality/ReadAllSpeciality", speciality_api.ReadAllSpeciality)
+  router.GET("speciality/ReadListSpecialityByCategories", speciality_api.ReadListSpecialityByCategories)
+  router.GET("speciality/ReadListSpecialityByListName", speciality_api.ReadListSpecialityByListName)
 
   router.Run()
 

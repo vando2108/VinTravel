@@ -114,6 +114,11 @@ func Login(c *gin.Context) {
 }
 
 func ReadUserData(c *gin.Context) {
+  if err := jwt.Verify(c.Request.Header["Authorization"][0]); err != nil {
+    c.JSON(http.StatusNonAuthoritativeInfo, err.Error())
+    return
+  }
+
   var requestData struct {
     Username string `form:"username" json:"username" binding:"required"`
     Token string `form:"token" json:"token" binding:"required"`
@@ -123,12 +128,6 @@ func ReadUserData(c *gin.Context) {
     return
   }
   requestData.Username = models.Santize(requestData.Username)  
-  requestData.Token = models.Santize(requestData.Token)
-
-  if err := jwt.Verify(requestData.Token); err != nil {
-    c.JSON(http.StatusBadRequest, err.Error())
-    return
-  }
   
   //Connect to database
   db, err := driver.Connect(configs.Host, configs.Port, configs.User, configs.Password, configs.Name)
@@ -148,6 +147,11 @@ func ReadUserData(c *gin.Context) {
 }
 
 func UpdateUser(c *gin.Context) {
+  if err := jwt.Verify(c.Request.Header["Authorization"][0]); err != nil {
+    c.JSON(http.StatusNonAuthoritativeInfo, err.Error())
+    return
+  }
+
   var requestData models.User
   if c.ShouldBindJSON(&requestData) != nil {
     c.JSON(http.StatusBadRequest, "Cannot parse data from request")
