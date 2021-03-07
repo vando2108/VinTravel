@@ -19,16 +19,18 @@ import (
 // Items        []Item_detail     `form:"items" json:"items" binding:"required"`
 // Images       []string  	 `form:"images" json:"images" binding:"required"`
 // Related      []int             `form:"related" json:"related" binding:"required"`
+
 func CreateDestination(c *gin.Context) {
   if jwt.TokenValid(c) != nil {
     return 
   }
 
   var requestData models.Destination_detail
-  if c.ShouldBindJSON(&requestData) != nil {
-    c.JSON(http.StatusBadRequest, "Cannot parse data from reqeust")
+  if err := c.ShouldBindJSON(&requestData); err != nil {
+    c.JSON(http.StatusBadRequest, err.Error)
     return
   }
+  fmt.Println(requestData)
   
   db, err := driver.Connect(configs.Host, configs.Port, configs.User, configs.Password, configs.Name)
   defer db.SQL.Close()

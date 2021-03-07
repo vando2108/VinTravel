@@ -25,6 +25,45 @@ func (p *SpecialityRepoImpl) GetImages(id int) ([]*models.Speciality_image, erro
   return ret, err
 }
 
+func (p *SpecialityRepoImpl) ReadSpeciality(name string) (models.SpecialityApi, error) {
+  var speciality models.Speciality_detail
+  speciality.Name = name
+  err := p.Db.Table("speciality_detail").First(&speciality, "name = ?", name).Error
+  if err != nil{
+    return models.SpecialityApi{}, err
+  }
+
+  var image_query []*models.Speciality_image
+  err = p.Db.Table("speciality_image").Find(&image_query, "speciality_parent_id= ?", speciality.Id).Error
+  if err != nil {
+    return models.SpecialityApi{}, err
+  }
+
+  var related_query []*models.Speciality_related
+  err = p.Db.Table("speciality_related").Find(&related_query, "speciality_parent_id", speciality.Id).Error
+  if err != nil {
+    return models.SpecialityApi{}, err
+  }
+
+  ret := models.SpecialityApi{
+    Name: speciality.Name,
+    Origin: speciality.Origin,
+    Voice: speciality.Voice,
+    Description: speciality.Description,
+    Categories: speciality.Categories,
+  }
+
+  for i := range image_query {
+    ret.Images = append(ret.Images, image_query[i].Url)
+  }
+
+  for i := range related_query {
+    ret.Related = append(ret.Related, related_query[i].Speciality_id)
+  }
+  
+  return ret, nil
+}
+
 func (p *SpecialityRepoImpl) CreateSpeciality(speciality *models.SpecialityApi) (error) {
   newSpeciality := models.Speciality_detail{
     Name: speciality.Name,
@@ -82,45 +121,6 @@ func (p *SpecialityRepoImpl) DeleteSpeciality(name string) (error) {
 
   err = p.Db.Table("speciality_detail").Delete(&queryData).Error
   return err
-}
-
-func (p *SpecialityRepoImpl) ReadSpeciality(name string) (models.SpecialityApi, error) {
-  var speciality models.Speciality_detail
-  speciality.Name = name
-  err := p.Db.Table("speciality_detail").First(&speciality, "name = ?", name).Error
-  if err != nil{
-    return models.SpecialityApi{}, err
-  }
-
-  var image_query []*models.Speciality_image
-  err = p.Db.Table("speciality_image").Find(&image_query, "speciality_parent_id= ?", speciality.Id).Error
-  if err != nil {
-    return models.SpecialityApi{}, err
-  }
-
-  var related_query []*models.Speciality_related
-  err = p.Db.Table("speciality_related").Find(&related_query, "speciality_parent_id", speciality.Id).Error
-  if err != nil {
-    return models.SpecialityApi{}, err
-  }
-
-  ret := models.SpecialityApi{
-    Name: speciality.Name,
-    Origin: speciality.Origin,
-    Voice: speciality.Voice,
-    Description: speciality.Description,
-    Categories: speciality.Categories,
-  }
-
-  for i := range image_query {
-    ret.Images = append(ret.Images, image_query[i].Url)
-  }
-
-  for i := range related_query {
-    ret.Related = append(ret.Related, related_query[i].Speciality_id)
-  }
-  
-  return ret, nil
 }
 
 func (p *SpecialityRepoImpl) ReadAllSpeciality() ([]models.SpecialityApi, error) {

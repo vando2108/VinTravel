@@ -121,7 +121,6 @@ func ReadUserData(c *gin.Context) {
 
   var requestData struct {
     Username string `form:"username" json:"username" binding:"required"`
-    Token string `form:"token" json:"token" binding:"required"`
   }
   if c.ShouldBindJSON(&requestData) != nil {
     c.JSON(http.StatusBadRequest, "Cannot parse data from request")

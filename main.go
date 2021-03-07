@@ -5,6 +5,7 @@ import (
 	"net/http"
 	auth "vintravel/api/auth"
 	speciality_api "vintravel/api/speciality"
+	destination_api "vintravel/api/destination"
 	config "vintravel/configs"
 	"vintravel/driver"
 
@@ -34,6 +35,8 @@ func main() {
   router.GET("/speciality/ReadAllSpeciality", speciality_api.ReadAllSpeciality)
   router.GET("speciality/ReadListSpecialityByCategories", speciality_api.ReadListSpecialityByCategories)
   router.GET("speciality/ReadListSpecialityByListName", speciality_api.ReadListSpecialityByListName)
+
+  router.POST("/destination/CreateDestination", destination_api.CreateDestination)
 
   router.Run()
 

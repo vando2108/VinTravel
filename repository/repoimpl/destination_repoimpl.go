@@ -22,5 +22,13 @@ func NewDestinationRepo(db *gorm.DB) repo.DescriptionRepo {
 
 func (d *DestinationRepoImpl) CreateDestination(destination models.Destination_detail) (error) {
   err := d.Db.Table("destination_detail").Create(&destination).Error
-  return err
+  if err != nil {
+    return err
+  }
+  
+  // for i := range destination.Images {
+  //
+  // }
+  
+  return nil
 }
