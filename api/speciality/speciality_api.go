@@ -159,38 +159,26 @@ func ReadListSpecialityByListName(c *gin.Context) {
     Name []string `json:"name" form:"name" binding:"required"`
   }
 
-  if c.ShouldBindJSON(&requestData) != nil {
-    c.JSON(http.StatusBadRequest, "Cannot parse data from request")
+  if err := c.ShouldBindJSON(&requestData); err != nil {
+    c.JSON(http.StatusBadRequest, err.Error)
     return
   }
 
   db, err := driver.Connect(configs.Host, configs.Port, configs.User, configs.Password, configs.Name)
   if err != nil {
-    c.JSON(http.StatusInternalServerError, "Cannot connect to database")
+    c.JSON(http.StatusInternalServerError, err.Error)
     return
   }
   specialityRepo := repoimpl.NewSpecialityRepo(db.SQL)
-  
-  var res [] struct {
-    Name string
-    Images []string
-  }
 
+  var ret []models.SpecialityApi
   for i := range requestData.Name {
     queryData, err := specialityRepo.ReadSpeciality(requestData.Name[i])
     if err != nil {
-      c.JSON(http.StatusInternalServerError, "Cannot read data from database")
+      c.JSON(http.StatusInternalServerError, err.Error)
       return
     }
-    res = append(res,
-      struct {
-	Name string
-	Images []string
-      } {
-	queryData.Name,
-	queryData.Images,
-      },
-    )
+    ret = append(ret, queryData)
   }
-  c.JSON(http.StatusOK, res)
+  c.JSON(http.StatusOK, ret)
 }

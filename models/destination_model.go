@@ -5,16 +5,25 @@ type Point struct {
   Y float64  `form:"y" json:"y" binding:"required"`
 }
 
+type Destination struct {
+  Id 	       int 	       	 `form:"id" json:"id"`
+  Name         string    	 `form:"name" json:"name" binding:"required"`
+  Address      string    	 `form:"address" json:"address" binding:"required"`
+  CityProvince string 	 	 `form:"cityProvince" json:"cityProvince" binding:"required"`
+  Description  string     	 `form:"description" json:"description" binding:"required"`
+  Coordinate   string     	 `form:"coordinate" json:"coordinate" binding:"required"`
+  Items        []Item            `form:"items" json:"items" binding:"required"`
+  Images       []string  	 `form:"images" json:"images" binding:"required"`
+  Related      []string          `form:"related" json:"related" binding:"required"`
+}
+
 type Destination_detail struct {
   Id 	       int 	       	 `form:"id" json:"id"`
   Name         string    	 `form:"name" json:"name" binding:"required"`
   Address      string    	 `form:"address" json:"address" binding:"required"`
   CityProvince string 	 	 `form:"cityProvince" json:"cityProvince" binding:"required"`
   Description  string     	 `form:"description" json:"description" binding:"required"`
-  Coordinate   Point     	 `form:"coordinate" json:"coordinate" binding:"required"`
-  Items        []Item_detail     `form:"items" json:"items" binding:"required"`
-  Images       []string  	 `form:"images" json:"images" binding:"required"`
-  Related      []string          `form:"related" json:"related" binding:"required"`
+  Coordinate   string     	 `form:"coordinate" json:"coordinate" binding:"required"`
 }
 
 type DestinationAPI struct {
