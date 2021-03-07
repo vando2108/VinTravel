@@ -25,7 +25,7 @@ func CreateDestination(c *gin.Context) {
     return 
   }
 
-  var requestData models.Destination_detail
+  var requestData models.Destination
   if err := c.ShouldBindJSON(&requestData); err != nil {
     c.JSON(http.StatusBadRequest, err.Error)
     return
