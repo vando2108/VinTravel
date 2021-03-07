@@ -193,7 +193,7 @@ func (p *SpecialityRepoImpl) ReadAllSpeciality() ([]models.SpecialityApi, error)
 
 func (p *SpecialityRepoImpl) ReadListSpecialityByCategories(categories string) ([]models.SpecialityApi, error) {
   var categories_query []*models.Speciality_categories
-  err := p.Db.Table("speciality_categories").Find(&categories_query, "name = ?", categories).Error
+  err := p.Db.Table("speciality_categories").Find(&categories_query, "cate = ?", categories).Error
   if err != nil {
     return nil, err
   }
@@ -213,7 +213,7 @@ func (p *SpecialityRepoImpl) ReadListSpecialityByCategories(categories string) (
       Description: specialityQuery.Description,
     }
     var images_query []*models.Speciality_image
-    err = p.Db.Table("speciality_image").Find("speciality_parent_id = ?", categories_query[i].Speciality_parent_id).Error
+    err = p.Db.Table("speciality_image").Find(&images_query, "speciality_parent_id = ?", categories_query[i].Speciality_parent_id).Error
     if err != nil {
       return nil, err
     }
@@ -221,20 +221,20 @@ func (p *SpecialityRepoImpl) ReadListSpecialityByCategories(categories string) (
       temp.Images = append(temp.Images, images_query[j].Url)
     }
     var related_query []*models.Speciality_related
-    err = p.Db.Table("speciality_related").Find("speciality_parent_id = ?", categories_query[i].Speciality_parent_id).Error
+    err = p.Db.Table("speciality_related").Find(&related_query, "speciality_parent_id = ?", categories_query[i].Speciality_parent_id).Error
     if err != nil {
       return nil, err
     }
-    for j := range images_query {
+    for j := range related_query {
       temp.Related = append(temp.Related, related_query[j].Name)
     }
-    var categories_query []*models.Speciality_categories
-    err = p.Db.Table("speciality_categories").Find("speciality_parent_id = ?", categories_query[i].Speciality_parent_id).Error
+    var categories_query2 []*models.Speciality_categories
+    err = p.Db.Table("speciality_categories").Find(&categories_query2, "speciality_parent_id = ?", categories_query[i].Speciality_parent_id).Error
     if err != nil {
       return nil, err
     }
-    for j := range categories_query {
-      temp.Categories = append(temp.Categories, categories_query[j].Cate)
+    for j := range categories_query2 {
+      temp.Categories = append(temp.Categories, categories_query2[j].Cate)
     }
     ret = append(ret, temp)
   }

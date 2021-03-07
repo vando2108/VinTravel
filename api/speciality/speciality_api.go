@@ -144,28 +144,10 @@ func ReadListSpecialityByCategories(c *gin.Context) {
   ret, err := specialityRepo.ReadListSpecialityByCategories(requestData.Categories)
 
   if err != nil {
-    c.JSON(http.StatusInternalServerError, "Cannot read data from database")
+    c.JSON(http.StatusInternalServerError, err.Error())
     return
   }
-
-  var res []struct {
-    Name string
-    Images []string
-  }
-  
-  for i := range ret {
-    fmt.Println(ret[i])
-    res = append(res, 
-      struct {
-        Name string
-        Images []string
-      } {
-        ret[i].Name,
-        ret[i].Images,
-      },
-    )
-  }
-  c.JSON(http.StatusOK, res)
+  c.JSON(http.StatusOK, ret)
 }
 
 func ReadListSpecialityByListName(c *gin.Context) {
