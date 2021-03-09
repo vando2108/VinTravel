@@ -4,12 +4,13 @@ import (
 	// "fmt"
 	"fmt"
 	"net/http"
+	"strconv"
 	"time"
 	"vintravel/configs"
 	"vintravel/driver"
+	jwt "vintravel/middleware/jwt"
 	"vintravel/models"
 	repo "vintravel/repository/repoimpl"
-	jwt "vintravel/middleware/jwt"
 
 	"github.com/asaskevich/govalidator"
 	"github.com/gin-gonic/gin"
@@ -42,9 +43,9 @@ func RegsiterUser(c *gin.Context) {
   var id int 
   db.SQL.Model(&models.User{}).Count(&id)
 
-  requestData.Username = models.Santize(requestData.Username)
-  requestData.Password = models.Santize(requestData.Password)
-  requestData.Name = models.Santize(requestData.Name)
+  // requestData.Username = models.Santize(requestData.Username)
+  // requestData.Password = models.Santize(requestData.Password)
+  // requestData.Name = models.Santize(requestData.Name)
 
   requestData.Password, err = models.Hash(requestData.Password)
 
@@ -81,8 +82,8 @@ func Login(c *gin.Context) {
     c.JSON(http.StatusBadRequest, "Cannot parse data from request")
     return
   }
-  requestData.Username = models.Santize(requestData.Username)
-  requestData.Password = models.Santize(requestData.Password)
+  // requestData.Username = models.Santize(requestData.Username)
+  // requestData.Password = models.Santize(requestData.Password)
 
   fmt.Println("Login reqeust: ",  requestData)
 
@@ -142,7 +143,12 @@ func ReadUserData(c *gin.Context) {
     c.JSON(http.StatusInternalServerError, err.Error())
     return
   }
-  c.JSON(http.StatusOK, queryUser)
+  ret := make(map[string]string)
+  ret["created_at"] = queryUser.Created_at.String()
+  ret["name"] = queryUser.Name
+  ret["username"] = queryUser.Username
+  ret["id"] = strconv.Itoa(queryUser.Id)
+  c.JSON(http.StatusOK, ret)
 }
 
 func UpdateUser(c *gin.Context) {

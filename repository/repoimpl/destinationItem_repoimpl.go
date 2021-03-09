@@ -20,12 +20,13 @@ func NewDestinationItemRepo(db *gorm.DB) repo.DestinationItemRepo {
   }
 }
 
-func (repo *DestinationItemRepoImpl) CreateDestinationItem(item models.Item) (error) {
-  temp := models.Item_detail {
+func (repo *DestinationItemRepoImpl) CreateDestinationItem(parent_id int, item models.Item) (error) {
+  temp := models.Destination_item{
+    Parent_id: parent_id,
     Name: item.Name,
     Price: item.Price,
   } 
-  err := repo.Db.Table("item_detail").Create(&temp).Error
+  err := repo.Db.Table("destination_item").Create(&temp).Error
   if err != nil {
     return err
   }

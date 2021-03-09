@@ -27,7 +27,7 @@ func CreateDestination(c *gin.Context) {
 
   var requestData models.Destination
   if err := c.ShouldBindJSON(&requestData); err != nil {
-    c.JSON(http.StatusBadRequest, err.Error)
+    c.JSON(http.StatusBadRequest, "Cannot parse data from request")
     return
   }
   fmt.Println(requestData)
