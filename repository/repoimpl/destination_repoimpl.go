@@ -2,6 +2,7 @@ package repoimpl
 
 import (
 	// "vintravel/models"
+	"math"
 	middleware "vintravel/middleware/database"
 	"vintravel/models"
 	repo "vintravel/repository"
@@ -87,10 +88,40 @@ func (d *DestinationRepoImpl) ReadDestination(name string) (error) {
   result.CityProvince = destination_detail.CityProvince
   result.Description = destination_detail.Description
   result.Coordinate = destination_detail.Coordinate
-  err = middleware.ReadFunctionality(d.Db, destination_detail.Id, "destination_functionality", &result)  
-  if err != nil {
+  if result.Functionalities, err = middleware.ReadFunctionality(d.Db, destination_detail.Id, "destination_functionality"); err != nil {
     return err
   }
-  err = middleware.ReadItem(d.Db, destination_detail.Id, "destination_item", &result)    
+  if result.Items, err = middleware.ReadItem(d.Db, destination_detail.Id, "destination_item"); err != nil {
+    return err
+  }
+
+  result.MaxPrice = 0
+  result.MinPrice = math.MaxFloat64
+  for _, it := range result.Items {
+    result.MaxPrice = math.Max(result.MaxPrice, it.Price)
+    result.MinPrice = math.Min(result.MinPrice, it.Price)
+  }
+
+  if result.Images, err = middleware.ReadImage(d.Db, destination_detail.Id, "destination_image"); err != nil {
+    return err
+  }
+  if result.Related, err = middleware.ReadRelated(d.Db, destination_detail.Id, "destination_related"); err != nil {
+    return err
+  }
+  if result.Tags, err = middleware.ReadTag(d.Db, destination_detail.Id, "destination_tag"); err != nil {
+    return err
+  }
+  if result.Types, err = middleware.ReadType(d.Db, destination_detail.Id, "destination_type"); err != nil {
+    return err
+  }
+  if result.Rating, err = middleware.ReadRating(d.Db, destination_detail.Id, "destination_rating"); err != nil {
+    return err
+  }
+  result.AvgRatings = 0
+  for _, it := range result.Rating {
+    result.AvgRatings = result.AvgRatings + float64(it.Star) 
+  }
+  result.AvgRatings /= float64(len(result.Rating))
+
   return nil
 }

@@ -21,8 +21,17 @@ func CreateImage(db *gorm.DB, parent_id int, tableName string, images []string) 
   return nil
 }
 
-func ReadImage(db *gorm.DB, parent_id int, tableName string, ) (error) { 
-
+func ReadImage(db *gorm.DB, parent_id int, tableName string) ([]string, error) { 
+  var listImage []*models.Image_table
+  err := db.Table(tableName).Find(&listImage, "parent_id = ?", parent_id).Error
+  if err != nil {
+    return nil, err
+  }
+  var ret []string
+  for _, it := range listImage {
+    ret = append(ret, it.Url)
+  }
+  return ret, nil
 }
 
 func CreateRelated(db *gorm.DB, parent_id int, tableName string, related []string) (error) {
@@ -37,6 +46,19 @@ func CreateRelated(db *gorm.DB, parent_id int, tableName string, related []strin
     }
   }
   return nil
+}
+
+func ReadRelated(db *gorm.DB, parent_id int, tableName string) ([]string, error) {
+  var listRelated []*models.Related_table
+  err := db.Table(tableName).Find(&listRelated, "parent_id = ?", parent_id).Error
+  if err != nil {
+    return nil, err
+  }
+  var ret []string
+  for _, it := range listRelated {
+    ret = append(ret, it.Name)
+  }
+  return ret, nil
 }
 
 func CreateFunctionality(db *gorm.DB, parent_id int, tableName string, functionalities []string) (error) {
@@ -67,6 +89,19 @@ func CreateType(db *gorm.DB, parent_id int, tableName string, types []string) (e
   return nil
 }
 
+func ReadType(db *gorm.DB, parent_id int, tableName string) ([]string, error) {
+  var listType []*models.Type_table
+  err := db.Table(tableName).Find(&listType, "parent_id = ?", parent_id).Error
+  if err != nil {
+    return nil, err
+  }
+  var ret []string
+  for _, it := range listType {
+    ret = append(ret, it.Name)
+  }
+  return ret, nil
+}
+
 func CreateTag(db *gorm.DB, parent_id int, tableName string, tags []string) (error) {  
   for i := range tags {
     temp := models.Tag_table {
@@ -81,7 +116,20 @@ func CreateTag(db *gorm.DB, parent_id int, tableName string, tags []string) (err
   return nil
 }
 
-func ReadFunctionality(db *gorm.DB, parent_id int, tableName string, destination *models.DestinationAPI) ([]string, error) {
+func ReadTag(db *gorm.DB, parent_id int, tableName string) ([]string, error) {
+  var listTag []*models.Tag_table
+  err := db.Table(tableName).Find(&listTag, "parent_id = ?", parent_id).Error
+  if err != nil {
+    return nil, err
+  }
+  var ret []string
+  for _, it := range listTag {
+    ret = append(ret, it.Tag)
+  }
+  return ret, nil
+}
+
+func ReadFunctionality(db *gorm.DB, parent_id int, tableName string) ([]string, error) {
   var listFunctionality []*models.Functionality_table
   err := db.Table(tableName).Find(&listFunctionality, "parent_id = ?", parent_id).Error
   if err != nil {
@@ -94,11 +142,11 @@ func ReadFunctionality(db *gorm.DB, parent_id int, tableName string, destination
   return ret, nil
 }
 
-func ReadItem(db *gorm.DB, parent_id int, tableName string, destination *models.DestinationAPI) (error) {
+func ReadItem(db *gorm.DB, parent_id int, tableName string) ([]models.Item, error) {
   var listItemDetail []*models.Item_detail
   err := db.Table(tableName).Find(&listItemDetail, "parent_id = ?", parent_id).Error
   if err != nil {
-    return err
+    return nil, err
   }
   var result []models.Item
   for _, it := range listItemDetail {
@@ -110,10 +158,22 @@ func ReadItem(db *gorm.DB, parent_id int, tableName string, destination *models.
     var listImage []*models.Image_table
     err := db.Table("item_image").Find(&listImage, "parent_id = ?", it.Id).Error
     if err != nil {
-      return err
+      return nil, err
     }
     result = append(result, temp)
  }
- destination.Items = result
- return nil
+ return result, nil
+}
+
+func ReadRating(db *gorm.DB, parent_id int, tableName string) ([]models.Rating, error) {
+  var listRating []*models.Rating
+  err := db.Table("destination_rating").Find(&listRating, "parent_id = ?", parent_id).Error
+  if err != nil {
+    return nil, err
+  }
+  var ret []models.Rating
+  for i := range listRating {
+    ret = append(ret, *listRating[i])
+  }
+  return ret, nil
 }

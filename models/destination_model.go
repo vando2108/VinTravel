@@ -38,10 +38,10 @@ type DestinationAPI struct {
   CityProvince 		string 	 	`form:"cityProvince" json:"cityProvince" binding:"required"`
   Description  		string    	`form:"description" json:"description" binding:"required"`
   Coordinate   		string     	`form:"point" json:"point" binding:"required"`
-  AvgPrices    		float64   	`form:"avgPrices" json:"avgPrices" binding:"required"`
+  MaxPrice    		float64   	`form:"maxPrice" json:"maxPrice" binding:"required"`
+  MinPrice    		float64   	`form:"minPrice" json:"minPrice" binding:"required"`
   AvgRatings   		float64   	`form:"avgRatings" json:"avgRatings" binding:"required"`
-  CntComment   		int       	`form:"cntComment" json:"cntComment" binding:"required"`
-  CntRating    		int       	`form:"cntRating" json:"cntRating" binding:"required"`
+  Rating                []Rating        `form:"rating" json:"rating" binding:"required"`
   Images       		[]string  	`form:"images" json:"images" binding:"required"`
   Nearby       		[]string  	`form:"nearby" json:"nearby" binding:"required"`
   Related      		[]string     	`form:"related" json:"related" binding:"required"`
