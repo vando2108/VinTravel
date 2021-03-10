@@ -43,9 +43,9 @@ func RegsiterUser(c *gin.Context) {
   var id int 
   db.SQL.Model(&models.User{}).Count(&id)
 
-  // requestData.Username = models.Santize(requestData.Username)
-  // requestData.Password = models.Santize(requestData.Password)
-  // requestData.Name = models.Santize(requestData.Name)
+  requestData.Username = models.Santize(requestData.Username)
+  requestData.Password = models.Santize(requestData.Password)
+  requestData.Name = models.Santize(requestData.Name)
 
   requestData.Password, err = models.Hash(requestData.Password)
 
@@ -82,8 +82,8 @@ func Login(c *gin.Context) {
     c.JSON(http.StatusBadRequest, "Cannot parse data from request")
     return
   }
-  // requestData.Username = models.Santize(requestData.Username)
-  // requestData.Password = models.Santize(requestData.Password)
+  requestData.Username = models.Santize(requestData.Username)
+  requestData.Password = models.Santize(requestData.Password)
 
   fmt.Println("Login reqeust: ",  requestData)
 

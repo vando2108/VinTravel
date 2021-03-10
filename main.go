@@ -24,7 +24,7 @@ func main() {
   router.GET("/index", func (c *gin.Context) {
     c.String(http.StatusOK, "heelo")
   })
-  router.POST("/auth/RegsiterUser", auth.RegsiterUser)
+  router.POST("/auth/Register", auth.RegsiterUser)
   router.POST("/auth/Login", auth.Login)
   router.GET("/auth/ReadUserData", auth.ReadUserData)
   router.POST("/auth/UpdateUser", auth.UpdateUser)
