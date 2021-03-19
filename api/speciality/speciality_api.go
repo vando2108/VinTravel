@@ -29,6 +29,7 @@ func CreateNewSpeciality(c *gin.Context) {
     c.JSON(http.StatusInternalServerError, "Cannot connect to database")
     return
   }
+  defer db.SQL.Close()
 
   specialityRepo := repoimpl.NewSpecialityRepo(db.SQL)
   err = specialityRepo.CreateSpeciality(&requestData)  
@@ -62,6 +63,8 @@ func DeleteSpeciality(c *gin.Context) {
     c.JSON(http.StatusInternalServerError, "Cannot connect to database")
     return
   }
+  defer db.SQL.Close()
+
   specialityRepo := repoimpl.NewSpecialityRepo(db.SQL)
 
   err = specialityRepo.DeleteSpeciality(requestData.Name)
@@ -91,6 +94,8 @@ func ReadSpeciality(c *gin.Context) {
     c.JSON(http.StatusInternalServerError, "Cannot connect to database")
     return
   }
+  defer db.SQL.Close()
+
   specialityRepo := repoimpl.NewSpecialityRepo(db.SQL)
 
   ret, err := specialityRepo.ReadSpeciality(requestData.Name)
@@ -112,6 +117,8 @@ func ReadAllSpeciality(c *gin.Context) {
     c.JSON(http.StatusInternalServerError, "Cannot connect to database")
     return
   }
+  defer db.SQL.Close()
+
   specialityRepo := repoimpl.NewSpecialityRepo(db.SQL)
   ret, err := specialityRepo.ReadAllSpeciality()
   if err != nil {
@@ -139,6 +146,8 @@ func ReadListSpecialityByCategories(c *gin.Context) {
     c.JSON(http.StatusInternalServerError, "Cannot connect to database")
     return
   }
+  defer db.SQL.Close()
+
   specialityRepo := repoimpl.NewSpecialityRepo(db.SQL)
 
   ret, err := specialityRepo.ReadListSpecialityByCategories(requestData.Categories)
@@ -169,6 +178,8 @@ func ReadListSpecialityByListName(c *gin.Context) {
     c.JSON(http.StatusInternalServerError, err.Error)
     return
   }
+  defer db.SQL.Close()
+
   specialityRepo := repoimpl.NewSpecialityRepo(db.SQL)
 
   var ret []models.SpecialityApi

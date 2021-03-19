@@ -33,11 +33,12 @@ func CreateDestination(c *gin.Context) {
   fmt.Println(requestData)
   
   db, err := driver.Connect(configs.Host, configs.Port, configs.User, configs.Password, configs.Name)
-  defer db.SQL.Close()
   if err != nil {
     c.JSON(http.StatusInternalServerError, "Cannot connect to database")
     return 
   } 
+  defer db.SQL.Close()
+
   destinationRepo := repo.NewDestinationRepo(db.SQL)
 
   err = destinationRepo.CreateDestination(requestData)
@@ -61,11 +62,12 @@ func ReadDestination(c *gin.Context) {
     return 
   }
   db, err := driver.Connect(configs.Host, configs.Port, configs.User, configs.Password, configs.Name)
-  defer db.SQL.Close()
   if err != nil {
     c.JSON(http.StatusInternalServerError, "Cannot connect to database")
     return 
   } 
+  defer db.SQL.Close()
+
   destinationRepo := repo.NewDestinationRepo(db.SQL)
   response, err := destinationRepo.ReadDestination(requestData.Name)
   if err != nil {

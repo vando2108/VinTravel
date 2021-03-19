@@ -35,11 +35,12 @@ func RegsiterUser(c *gin.Context) {
   }
 
   db, err := driver.Connect(configs.Host, configs.Port, configs.User, configs.Password, configs.Name)
-  defer db.SQL.Close()
   if err != nil {
     c.JSON(http.StatusInternalServerError, "Cannot connect to database")
     return
   } 
+  defer db.SQL.Close()
+
   var id int 
   db.SQL.Model(&models.User{}).Count(&id)
 
@@ -89,11 +90,12 @@ func Login(c *gin.Context) {
 
   //Connect to database
   db, err := driver.Connect(configs.Host, configs.Port, configs.User, configs.Password, configs.Name)
-  defer db.SQL.Close()
   if err != nil {
     c.JSON(http.StatusInternalServerError, "Cannot connect to database")
     return
   } 
+  defer db.SQL.Close()
+
   userRepo := repo.NewUserRepo(db.SQL)
   var queryUser models.User
   queryUser, err = userRepo.ReadUser(requestData.Username)
@@ -131,11 +133,12 @@ func ReadUserData(c *gin.Context) {
   
   //Connect to database
   db, err := driver.Connect(configs.Host, configs.Port, configs.User, configs.Password, configs.Name)
-  defer db.SQL.Close()
   if err != nil {
     c.JSON(http.StatusInternalServerError, "Cannot connect to database")
     return
   } 
+  defer db.SQL.Close()
+
   userRepo := repo.NewUserRepo(db.SQL)
   var queryUser models.User
   queryUser, err = userRepo.ReadUser(requestData.Username)
@@ -177,11 +180,12 @@ func UpdateUser(c *gin.Context) {
 
   //Connect to database
   db, err := driver.Connect(configs.Host, configs.Port, configs.User, configs.Password, configs.Name)
-  defer db.SQL.Close()
   if err != nil {
     c.JSON(http.StatusInternalServerError, "Cannot connect to database")
     return
   } 
+  defer db.SQL.Close()
+
   userRepo := repo.NewUserRepo(db.SQL)
   err = userRepo.UpdateUser(&requestData) 
   if err != nil {
