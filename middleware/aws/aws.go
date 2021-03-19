@@ -2,7 +2,6 @@ package aws
 
 import (
 	"bytes"
-	"fmt"
 	"net/http"
 	"os"
 
