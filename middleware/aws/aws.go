@@ -32,7 +32,6 @@ func Upload(session *session.Session, fileDir string) (string, error) {
   var fileSize int64 = fileInfo.Size()
   buffer := make([]byte, fileSize)
   upFile.Read(buffer)
-  fmt.Println(buffer)
 
   _, err = s3.New(session).PutObject(&s3.PutObjectInput{
     Bucket: aws.String(AWS_BUCKET),
