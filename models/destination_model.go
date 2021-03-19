@@ -9,6 +9,8 @@ type Destination struct {
   Coordinate   		string     	 `form:"coordinate" json:"coordinate" binding:"required"`
   Items        		[]Item           `form:"items" json:"items" binding:"required"`
   Images       		[]string  	 `form:"images" json:"images" binding:"required"`
+  Nearby       		[]string  	 `form:"nearby" json:"nearby" binding:"required"`
+  RelatedNearby         []string         `form:"relatedNearby" json:"relatedNearby" binding:"required"`
   Related      		[]string         `form:"related" json:"related" binding:"required"`
   Tags         		[]string 	 `form:"tags" json:"tags" binding:"required"`
   Types 		[]string 	 `form:"types" json:"types" binding:"required"`
@@ -44,6 +46,7 @@ type DestinationAPI struct {
   Rating                []Rating        `form:"rating" json:"rating" binding:"required"`
   Images       		[]string  	`form:"images" json:"images" binding:"required"`
   Nearby       		[]string  	`form:"nearby" json:"nearby" binding:"required"`
+  RelatedNearby         []string        `form:"relatedNearby" json:"relatedNearby" binding:"required"`
   Related      		[]string     	`form:"related" json:"related" binding:"required"`
   Items        		[]Item 	        `form:"items" json:"items" binding:"required"`
   Tags         		[]string 	`form:"tags" json:"tags" binding:"required"`

@@ -6,6 +6,7 @@ import (
 	auth "vintravel/api/auth"
 	speciality_api "vintravel/api/speciality"
 	destination_api "vintravel/api/destination"
+	aws_api "vintravel/api/aws"
 	config "vintravel/configs"
 	"vintravel/driver"
 
@@ -37,9 +38,11 @@ func main() {
   router.GET("speciality/ReadListSpecialityByListName", speciality_api.ReadListSpecialityByListName)
 
   router.POST("/destination/CreateDestination", destination_api.CreateDestination)
+  router.POST("/destination/ReadDestination", destination_api.ReadDestination)
+
+  router.POST("/image/upload", aws_api.UploadImage)
 
   router.Run()
-
 
   defer db.SQL.Close()
 }

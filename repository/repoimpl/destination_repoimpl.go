@@ -2,6 +2,7 @@ package repoimpl
 
 import (
 	// "vintravel/models"
+	"fmt"
 	"math"
 	middleware "vintravel/middleware/database"
 	"vintravel/models"
@@ -21,6 +22,8 @@ func NewDestinationRepo(db *gorm.DB) repo.DestinationRepo {
     Db: db,
   }
 }
+
+var count = 0
 
 func (d *DestinationRepoImpl) CreateDestination(destination models.Destination) (error) {
   destination_detail := models.Destination_detail {
@@ -55,6 +58,14 @@ func (d *DestinationRepoImpl) CreateDestination(destination models.Destination) 
   if err != nil {
     return err
   }
+  err = middleware.CreateNearby(d.Db, destination_detail.Id, "destination_nearby", destination.Nearby)
+  if err != nil {
+    return err
+  }
+  err = middleware.CreateRelatedNearby(d.Db, destination_detail.Id, "destination_related_nearby", destination.RelatedNearby)
+  if err != nil {
+    return err
+  }
 
   destinationItemRepo := NewDestinationItemRepo(d.Db)
   for i := range destination.Items {
@@ -75,12 +86,14 @@ func (d *DestinationRepoImpl) CreateDestination(destination models.Destination) 
 //   Description  string     	 `form:"description" json:"description" binding:"required"`
 //   Coordinate   string     	 `form:"coordinate" json:"coordinate" binding:"required"`
 // }
-func (d *DestinationRepoImpl) ReadDestination(name string) (error) {
+func (d *DestinationRepoImpl) ReadDestination(name string) (models.DestinationAPI, error) {
+  count++
+  fmt.Println(count)
   var result models.DestinationAPI
   var destination_detail models.Destination_detail
   err := d.Db.Table("destination_detail").Find(&destination_detail, "name = ?", name).Error
   if err != nil {
-    return err
+    return models.DestinationAPI{}, err
   }
   result.Id = destination_detail.Id
   result.Name = destination_detail.Name
@@ -89,10 +102,10 @@ func (d *DestinationRepoImpl) ReadDestination(name string) (error) {
   result.Description = destination_detail.Description
   result.Coordinate = destination_detail.Coordinate
   if result.Functionalities, err = middleware.ReadFunctionality(d.Db, destination_detail.Id, "destination_functionality"); err != nil {
-    return err
+    return models.DestinationAPI{}, err
   }
   if result.Items, err = middleware.ReadItem(d.Db, destination_detail.Id, "destination_item"); err != nil {
-    return err
+    return models.DestinationAPI{}, err
   }
 
   result.MaxPrice = 0
@@ -103,25 +116,33 @@ func (d *DestinationRepoImpl) ReadDestination(name string) (error) {
   }
 
   if result.Images, err = middleware.ReadImage(d.Db, destination_detail.Id, "destination_image"); err != nil {
-    return err
+    return models.DestinationAPI{}, err
   }
   if result.Related, err = middleware.ReadRelated(d.Db, destination_detail.Id, "destination_related"); err != nil {
-    return err
+    return models.DestinationAPI{}, err
   }
   if result.Tags, err = middleware.ReadTag(d.Db, destination_detail.Id, "destination_tag"); err != nil {
-    return err
+    return models.DestinationAPI{}, err
   }
   if result.Types, err = middleware.ReadType(d.Db, destination_detail.Id, "destination_type"); err != nil {
-    return err
+    return models.DestinationAPI{}, err
   }
   if result.Rating, err = middleware.ReadRating(d.Db, destination_detail.Id, "destination_rating"); err != nil {
-    return err
+    return models.DestinationAPI{}, err
+  }
+  if result.Nearby, err = middleware.ReadNearby(d.Db, destination_detail.Id, "destination_nearby"); err != nil {
+    return models.DestinationAPI{}, err
+  }
+  if result.RelatedNearby, err = middleware.ReadRelatedNearby(d.Db, destination_detail.Id, "destination_related_nearby"); err != nil {
+    return models.DestinationAPI{}, err
   }
   result.AvgRatings = 0
-  for _, it := range result.Rating {
-    result.AvgRatings = result.AvgRatings + float64(it.Star) 
+  if len(result.Rating) != 0 {
+    for _, it := range result.Rating {
+      result.AvgRatings = result.AvgRatings + float64(it.Star) 
+    }
+    result.AvgRatings /= float64(len(result.Rating))
   }
-  result.AvgRatings /= float64(len(result.Rating))
 
-  return nil
+  return result, nil
 }

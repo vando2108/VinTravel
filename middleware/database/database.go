@@ -160,6 +160,9 @@ func ReadItem(db *gorm.DB, parent_id int, tableName string) ([]models.Item, erro
     if err != nil {
       return nil, err
     }
+    for _, jt := range listImage {
+      temp.Images = append(temp.Images, jt.Url)
+    }
     result = append(result, temp)
  }
  return result, nil
@@ -174,6 +177,60 @@ func ReadRating(db *gorm.DB, parent_id int, tableName string) ([]models.Rating, 
   var ret []models.Rating
   for i := range listRating {
     ret = append(ret, *listRating[i])
+  }
+  return ret, nil
+}
+
+func CreateNearby(db *gorm.DB, parent_id int, tableName string, nearby []string) (error) {
+  for _, it := range nearby {
+    temp := models.Nearby_table {
+      Name: it,
+      Parent_id : parent_id,
+    }
+    err := db.Table(tableName).Create(&temp).Error
+    if err != nil {
+      return err
+    }
+  }
+  return nil
+}
+
+func ReadNearby(db *gorm.DB, parent_id int, tableName string) ([]string, error) {
+  var listNearby []*models.Nearby_table 
+  err := db.Table(tableName).Find(&listNearby, "parent_id = ?", parent_id).Error
+  if err != nil {
+    return nil, err
+  } 
+  var ret []string
+  for _, it := range listNearby {
+    ret = append(ret, it.Name)
+  }
+  return ret, nil
+}
+
+func CreateRelatedNearby(db *gorm.DB, parent_id int, tableName string, relatedNearby []string) (error) {
+  for _, it := range relatedNearby {
+    temp := models.Nearby_table {
+      Name: it,
+      Parent_id : parent_id,
+    }
+    err := db.Table(tableName).Create(&temp).Error
+    if err != nil {
+      return err
+    }
+  }
+  return nil
+}
+
+func ReadRelatedNearby(db *gorm.DB, parent_id int, tableName string) ([]string, error) {
+  var listRelatedNearby []*models.RelatedNearby_table 
+  err := db.Table(tableName).Find(&listRelatedNearby, "parent_id = ?", parent_id).Error
+  if err != nil {
+    return nil, err
+  }
+  var ret []string 
+  for _, it := range listRelatedNearby {
+    ret = append(ret, it.Name)
   }
   return ret, nil
 }
