@@ -11,8 +11,8 @@ import (
 )
 
 const (
-  AWS_REGION = "ap-southeast-1"
-  AWS_BUCKET = "vintravel"
+  AWS_REGION = "us-east-1"
+  AWS_BUCKET = "vintravelv2"
 )
 
 func Init() (*session.Session, error) {
